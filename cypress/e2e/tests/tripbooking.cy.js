@@ -5,6 +5,7 @@ import { before, beforeEach } from "mocha";
 
 
 let priceText;
+let priceInDeposite;
 
 describe('passengerDetails with card details',()=> {  
   let data; //closure variable
@@ -15,6 +16,7 @@ describe('passengerDetails with card details',()=> {
 });
 beforeEach(()=> {
   cy.visit('https://www.exodus.co.uk/booking/passengers#!departureCode=TEJA241020_FI&adults=1&children=0&tripcode=TEJ'); 
+  cy.wait(1000);
   cy.get('select[data-testid="title"]').select('Mr.').should('have.value','Mr.');
   TripBookingPage.typeFirstname(data.firstName);
   TripBookingPage.typeMiddleName(data.middleName);
@@ -31,7 +33,7 @@ beforeEach(()=> {
   cy.get('input[data-testid="dateOfBirth"]').type(data.dob).trigger('input');
 
   cy.get('button.btn.btn--link').click();
-  cy.get('[data-testid="addressLineOne"]').type(data.address);
+  cy.get('[data-testid="addressLineOne"]').type(data.address,{force:true});
   cy.get('[data-testid="city"]').type(data.city,{force:true});
   cy.get('[data-testid="stateOrCounty"]').type(data.state,{force:true});
   cy.get('[data-testid="postCode"]').type(data.postCode,{force:true});
@@ -43,16 +45,18 @@ beforeEach(()=> {
       PaymentPage.verifyPaymentMethodSectionText();
       PaymentPage.verifypaymentOptionValueVisacard();
       PaymentPage.verifypaymentOptionValueMastercard();
-     // PaymentPage.selectPaymentMethodVisa();
-      PaymentPage.selectCheckBoxedTermConditions();
-      PaymentPage.clickOnPaymentPageSection();
-      PaymentPage.verifyTotalPrice();
+    
 });
 
    it('TC_01_Negative it will enter passenger details and invalid card details for masterCard for pay in full', () => {
-
+    PaymentPage.verifyTotalPrice().then($value =>{
+      priceText = $value.text();
+      expect(priceText).to.equal('£2,045.00');
+    });
       PaymentPage.selectPaymentMethodMasterCard();
- 
+      PaymentPage.selectCheckBoxedTermConditions();
+      PaymentPage.clickOnPaymentPageSection();
+      CardDetailsPage.verifySelectedPaymentMethodOnCardDetailsPage().should('have.text','Mastercard');
       CardDetailsPage.enterCardNumberUnderCardDetailsPage(data.cardNumber);
       CardDetailsPage.selectCarDHolderNameOnCardDetailsPage(data.cardHolderName);
       CardDetailsPage.selectExpiryMonthOnCardDetailsPage(data.cardExpiryMonth);
@@ -62,13 +66,22 @@ beforeEach(()=> {
       CardDetailsPage.verifyInvalidCardEntryMessage();
       CardDetailsPage.verifyInvalidCardMonthMessage();
       CardDetailsPage.verifyInvalidCardYearMessage();
+      CardDetailsPage.verifyFinalTotalPriceOnCardDetailsPage().then($value=>{
+        const payInfull = $value.text().trim();
+        expect(priceText===payInfull);
+      })
 
  
   })
-  it('TC_01_Positive it will enter passenger details and valid card details for master card for pay in full', () => {
-    
+  it('TC_02_Positive it will enter passenger details and valid card details for master card for pay in full', () => {
+    PaymentPage.verifyTotalPrice().then($value =>{
+      priceText = $value.text();
+      expect(priceText).to.equal('£2,045.00');
+    });
         PaymentPage.selectPaymentMethodMasterCard();
-   
+        PaymentPage.selectCheckBoxedTermConditions();
+        PaymentPage.clickOnPaymentPageSection();
+      CardDetailsPage.verifySelectedPaymentMethodOnCardDetailsPage().should('have.text','Mastercard');
       CardDetailsPage.enterCardNumberUnderCardDetailsPage(data.cardNumber);
       CardDetailsPage.selectCarDHolderNameOnCardDetailsPage(data.cardHolderName);
       CardDetailsPage.selectExpiryMonthOnCardDetailsPage("08");
@@ -83,9 +96,14 @@ beforeEach(()=> {
  
   })
   it('TC_03_Negative it will enter passenger details and invalid card details for visa for pay in full', () => {
-        
+    PaymentPage.verifyTotalPrice().then($value =>{
+      priceText = $value.text();
+      expect(priceText).to.equal('£2,045.00');
+    }); 
       PaymentPage.selectPaymentMethodVisa();
-     
+      PaymentPage.selectCheckBoxedTermConditions();
+      PaymentPage.clickOnPaymentPageSection();
+      CardDetailsPage.verifySelectedPaymentMethodOnCardDetailsPage().should('have.text','VISA');
       CardDetailsPage.enterCardNumberUnderCardDetailsPage(data.cardNumber);
       CardDetailsPage.selectCarDHolderNameOnCardDetailsPage(data.cardHolderName);
       CardDetailsPage.selectExpiryMonthOnCardDetailsPage(data.cardExpiryMonth);
@@ -101,7 +119,14 @@ beforeEach(()=> {
  
   })
   it('TC_04_Positive it will enter passenger details and valid card details with visa for pay in full', () => {
-      PaymentPage.selectPaymentMethodVisa();
+    PaymentPage.verifyTotalPrice().then($value =>{
+      priceText = $value.text();
+      expect(priceText).to.equal('£2,045.00');
+    }); 
+    PaymentPage.selectPaymentMethodVisa();
+      PaymentPage.selectCheckBoxedTermConditions();
+      PaymentPage.clickOnPaymentPageSection();
+      CardDetailsPage.verifySelectedPaymentMethodOnCardDetailsPage().should('have.text','VISA');
       CardDetailsPage.enterCardNumberUnderCardDetailsPage(data.cardNumber);
       CardDetailsPage.selectCarDHolderNameOnCardDetailsPage(data.cardHolderName);
       CardDetailsPage.selectExpiryMonthOnCardDetailsPage(data.cardExpiryMonth);
@@ -117,4 +142,53 @@ beforeEach(()=> {
   })
   // same way we will implemement for pay in Deposite section for both visa and master card with positive and negative
   // so total 8 test case will be there to validate payment functionality is working fine or not
+
+  it('TC_05_Positive it will enter passenger details and valid card details with visa for pay in deposite', () => {
+    PaymentPage.verifyTotalPriceIndeposite().then($value =>{
+      priceInDeposite = $value.text();
+      expect(priceInDeposite).to.equal('£511.25');
+    });
+    PaymentPage.selectPayInDepositeMethodOnPaymentPage();
+    PaymentPage.selectPaymentMethodVisa();
+    PaymentPage.selectCheckBoxedTermConditions();
+    PaymentPage.clickOnPaymentPageSection();
+    CardDetailsPage.verifySelectedPaymentMethodOnCardDetailsPage().should('have.text','VISA');
+    CardDetailsPage.enterCardNumberUnderCardDetailsPage(data.cardNumber);
+    CardDetailsPage.selectCarDHolderNameOnCardDetailsPage(data.cardHolderName);
+    CardDetailsPage.selectExpiryMonthOnCardDetailsPage(data.cardExpiryMonth);
+    CardDetailsPage.selectExpiryYearOnCardDetailsPage(data.cardExpiryYear);
+    CardDetailsPage.typeCVVUnderCardDetailsPage(data.cardCode);
+    CardDetailsPage.clickOnContinueBtnOnCardDetailsPage();  
+    CardDetailsPage.verifyFinalTotalPriceOnCardDetailsPage().then($value=>{
+      const deposite = $value.text().trim();
+      expect(priceInDeposite===deposite);
+    })
+    //expect valid card details that need to read from fixtures and user can receive valid bookingId for the same
+    //implement logic to get valid bookingID
+
+})
+it('TC_06_Positive it will enter passenger details and valid card details with masterCard for pay in deposite', () => {
+  PaymentPage.verifyTotalPriceIndeposite().then($value =>{
+    priceInDeposite = $value.text();
+    expect(priceInDeposite).to.equal('£511.25');
+  });
+  PaymentPage.selectPayInDepositeMethodOnPaymentPage();
+  PaymentPage.selectPaymentMethodMasterCard();
+  PaymentPage.selectCheckBoxedTermConditions();
+  PaymentPage.clickOnPaymentPageSection();
+  CardDetailsPage.verifySelectedPaymentMethodOnCardDetailsPage().should('have.text','Mastercard');
+  CardDetailsPage.enterCardNumberUnderCardDetailsPage(data.cardNumber);
+  CardDetailsPage.selectCarDHolderNameOnCardDetailsPage(data.cardHolderName);
+  CardDetailsPage.selectExpiryMonthOnCardDetailsPage(data.cardExpiryMonth);
+  CardDetailsPage.selectExpiryYearOnCardDetailsPage(data.cardExpiryYear);
+  CardDetailsPage.typeCVVUnderCardDetailsPage(data.cardCode);
+  CardDetailsPage.clickOnContinueBtnOnCardDetailsPage();  
+  CardDetailsPage.verifyFinalTotalPriceOnCardDetailsPage().then($value=>{
+    const deposite = $value.text().trim();
+    expect(priceInDeposite===deposite);
+  })
+  //expect valid card details that need to read from fixtures and user can receive valid bookingId for the same
+  //implement logic to get valid bookingID
+
+})
 })

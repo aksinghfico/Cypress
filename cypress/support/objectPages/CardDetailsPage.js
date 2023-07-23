@@ -11,6 +11,8 @@ class cardDetailsPage {
         invalidCardNumberErrorMsge: ()=>cy.get('.help-block ul.error-messages').first(),
         invalidCardMonthErrorMsge: ()=>cy.get('#expiryMonth + .help-block ul.error-messages').first(),
         invalidCardYearErrorMsge: ()=>cy.get('#expiryYear + .help-block ul.error-messages').first(),
+        finalTotalPriceOnCardDetailsPage: ()=>cy.get('.total .amount'),
+        cardeDetailsPagePaymentMethodCardText: ()=> cy.get('#paymentMethodBlock span')
       };
       verifyCardDetailsPageTitle(){
         return this.elements.cardDetailsPageTitle().should('have.value','Exodus Travels Limited');
@@ -42,5 +44,11 @@ class cardDetailsPage {
       verifyInvalidCardYearMessage(){
         return this.elements.invalidCardMonthErrorMsge().contains('Card expired');
       }
-}
+      verifyFinalTotalPriceOnCardDetailsPage(){
+        return this.elements.finalTotalPriceOnCardDetailsPage().should('not.be.NaN');
+      }
+      verifySelectedPaymentMethodOnCardDetailsPage(){
+        return this.elements.cardeDetailsPagePaymentMethodCardText().should('not.be.NaN');
+      }
+}    
 module.exports = new cardDetailsPage();

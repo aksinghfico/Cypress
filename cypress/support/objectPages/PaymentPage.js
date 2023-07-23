@@ -10,6 +10,7 @@ class paymentPage {
         paymentTypeDeposite: () => cy.get('input[name="paymentType"][value="Deposit"]'),
         goToPaymentPageBtn: ()=>cy.get('.actions-div >button[class="btn "]'),
         totalguidePrice:() => cy.get('.pricing-summary .body-text-small:nth-child(2)'),
+        totalguidePriceForPayInDeposite:() => cy.get('.pricing-summary .body-text-small:nth-child(6)').first(),
         masterCardTextOnPaymentPage:()=> cy.get('#paymentMethodReadonlyValue'),
         paymentPageCardNumberInput: ()=>cy.get('#cardnumber[fdprocessedid]'),
         paymentPageCardholderNameInput: ()=>cy.get('#cardholderName[fdprocessedid]'),
@@ -55,13 +56,16 @@ class paymentPage {
         return this.elements.goToPaymentPageBtn().click({force:true});
       }
       verifyTotalPrice(){
-        return this.elements.totalguidePrice().should('not.be.NaN');
+        return this.elements.totalguidePrice().should('not.be.NaN').first();
+      }
+      verifyTotalPriceIndeposite(){
+        return this.elements.totalguidePriceForPayInDeposite().should('not.be.NaN').first();
       }
       verifyMasterCardSelectionOnPaymentPage(){
         return this.elements.masterCardTextOnPaymentPage().should('have.value','MASTERCARD');
       }
       selectPayInDepositeMethodOnPaymentPage(){
-        return this.elements.paymentPagePayInDepositeCheckBox().click({force:true});
+        return this.elements.paymentPagePayInDepositeCheckBox().click({force:true}).should('be.checked');
       }
 
 
