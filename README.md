@@ -13,7 +13,7 @@ Open vscode >> File >>Open Folder (unzipped Cypress folder)
 
 Step 2:
 Open terminal in vs code. Make sure the terminal is at path where project has been unzipped
-e.g. C:\Users\AKS\Cypress>
+e.g. C:\Users\AKS\Documents\GitHub\DemoProject\Cypress>
 Make sure in this folder package.json should present if its not there then enter mentioned command below
 npm init
 
