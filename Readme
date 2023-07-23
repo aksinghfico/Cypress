@@ -1,0 +1,44 @@
+###Exodus Payment Vlidation Test#####
+######################################
+Prerequisite :
+VS code 
+node 
+npm 
+Cypress should be installed in system
+
+######################################
+Step 1:
+Unzip project and Pull project folder under vs code:
+Open vscode >> File >>Open Folder (unzipped Cypress folder)
+
+Step 2:
+Open terminal in vs code. Make sure the terminal is at path where project has been unzipped
+e.g. C:\Users\AKS\Cypress>
+Make sure in this folder package.json should present if its not there then enter mentioned command below
+npm init
+
+Step:3:
+Execute the command: 
+      npm install
+
+Step:4: 
+Execute following command to run the test
+    node ./node_modules/cypress/bin/cypress open
+
+Step:5:
+Once cypress opens, select e2e and then click on tripbooking.cy.js 
+it will run the test 
+
+###############################
+Implemeneted Page Object Model for framework design
+
+###################################
+Versions:
+Cypress :12.17.1,
+npm : 9.6.7
+node: 18.17.0
+ChromeBrowser version: 115
+Vs code:  1.80.1
+#############
+
+

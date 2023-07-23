@@ -1,0 +1,20 @@
+{
+  "title": "Mr.",
+  "firstName": "Amit",
+  "middleName": "kumar",
+  "lastName": "Singh",
+  "gender": "Male",
+  "dob": "1990-12-12",
+  "email": "test@email.com",
+  "phoneNumber": "327429399",
+  "address": "Gadag Bypass Road",
+  "cardNumber":"132312323",
+  "cardHolderName":"Amit",
+  "cardExpiryMonth":"04",
+  "cardExpiryYear":"2023",
+  "cardCode":"345",
+  "city":"Gadag",
+  "state":"Karnataka",
+  "postCode":"582101",
+  "country":"India"
+}
